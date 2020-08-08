@@ -34,3 +34,9 @@ def GetAdjacents(the_map, x, y, filter_wall=False):
     if filter_wall:
         adjacents = [each for each in adjacents if each[1] != 1]
     return adjacents
+
+def remove_object(adjacents):
+    new_adjacents = []
+    for adj in adjacents:
+        new_adjacents.append(adj[0])
+    return new_adjacents
