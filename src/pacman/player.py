@@ -1,7 +1,8 @@
-import src.search
-import src.map_utils
-import random
+#!/bin/env python3
+# Pacman and Ghosts
 
+from . import map_utils, search
+import random
 
 class Player:
     def __init__(self, position):
@@ -18,10 +19,10 @@ class Player:
         self._position = position
 
     def search_target(self, the_map, target):  # target = (x, y): position of target
-        self._path = src.search.a_star_search(the_map, self._position, target)
+        self._path = search.a_star_search(the_map, self._position, target)
 
     def random_move(self, the_map):
-        available_moves = src.map_utils.GetAdjacents(the_map, self._position[0], self._position[1], True)
+        available_moves = map_utils.GetAdjacents(the_map, self._position[0], self._position[1], True)
         self._path = [self._position, random.choice(available_moves)]
 
 

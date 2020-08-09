@@ -1,6 +1,8 @@
-import heapq
-import src.map_utils as utils
+#!/bin/env python3
+# Search algorithms
 
+from . import map_utils as utils
+import heapq
 
 def backtracking(parents, agent_cord, goal_cord):
     path = [goal_cord]
@@ -9,10 +11,8 @@ def backtracking(parents, agent_cord, goal_cord):
     path.reverse()
     return path
 
-
 def manhattan_heuristic_function(agent_cord, goal_cord):
     return abs(agent_cord[0] - goal_cord[0]) + abs(agent_cord[1] - goal_cord[1])
-
 
 def a_star_search(the_map, agent_cord, goal_cord):
     parents = {}
