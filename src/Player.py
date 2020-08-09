@@ -14,6 +14,9 @@ class Player:
     def get_path(self):
         return self._path
 
+    def update_position(self, position):
+        self._position = position
+
     def search_target(self, the_map, target):  # target = (x, y): position of target
         self._path = src.search.a_star_search(the_map, self._position, target)
 

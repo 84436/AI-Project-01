@@ -40,3 +40,11 @@ def remove_object(adjacents):
     for adj in adjacents:
         new_adjacents.append(adj[0])
     return new_adjacents
+
+def update_map(the_map, current, move):
+    the_map[current[1]][current[0]] = 0
+    the_map[move[1]][move[0]] = 9
+
+def print_map(the_map):
+    for row in the_map:
+        print(row)
