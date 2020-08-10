@@ -22,7 +22,7 @@ class Player:
         self._path = search.a_star_search(the_map, self._position, target)
 
     def random_move(self, the_map):
-        available_moves = map_utils.GetAdjacents(the_map, self._position[0], self._position[1], True)
+        available_moves = the_map.get_adjacents(self._position)
         self._path = [self._position, random.choice(available_moves)]
 
 
@@ -34,5 +34,8 @@ class Pacman(Player):
     def get_score(self):
         return self._score
 
-    def update_score(self, move_score):
-        self._score = self._score + move_score
+    def update_score(self, is_food):
+        if is_food:
+            self._score = self._score + 20
+        else:
+            self._score = self._score - 1

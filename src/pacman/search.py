@@ -1,7 +1,7 @@
 #!/bin/env python3
 # Search algorithms
 
-from . import map_utils as utils
+#from . import map_utils as utils
 import heapq
 
 def backtracking(parents, agent_cord, goal_cord):
@@ -38,9 +38,9 @@ def a_star_search(the_map, agent_cord, goal_cord):
                 parents[p] = parents[p][0]
             return backtracking(parents, agent_cord, goal_cord)
 
-        adjacents = utils.remove_object(utils.GetAdjacents(the_map, current[1][1][0], current[1][1][1], True))
+        adjacents = the_map.get_adjacents(current[1][1])
 
-        for adj in adjacents:   # adjacents = [(x, y)]
+        for adj in adjacents:
             if adj not in explored:
                 current_path_cost = current[0] - manhattan_heuristic_function(current[1][1], goal_cord)
                 h_adj = manhattan_heuristic_function(adj, goal_cord)
@@ -72,7 +72,7 @@ def breadth_first_search(the_map, agent_cord, goal_cord):
         if current == goal_cord:
             return backtracking(parents, agent_cord, goal_cord)
 
-        adjacents = utils.GetAdjacents(the_map, current[1][0], current[1][1], True)
+        adjacents = the_map.get_adjacents(current[1])
 
         for adj in adjacents:
             if adj not in explored and adj not in frontier:
