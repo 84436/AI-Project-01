@@ -14,7 +14,7 @@ def backtracking(parents, agent_cord, goal_cord):
 def manhattan_heuristic_function(agent_cord, goal_cord):
     return abs(agent_cord[0] - goal_cord[0]) + abs(agent_cord[1] - goal_cord[1])
 
-def a_star_search(the_map, agent_cord, goal_cord):
+def a_star_search(the_map, agent_cord, goal_cord, is_ghost=False):
     parents = {}
     explored = []
     frontier = []
@@ -38,7 +38,7 @@ def a_star_search(the_map, agent_cord, goal_cord):
                 parents[p] = parents[p][0]
             return backtracking(parents, agent_cord, goal_cord)
 
-        adjacents = the_map.get_adjacents(current[1][1])
+        adjacents = the_map.get_adjacents(current[1][1], not is_ghost)
 
         for adj in adjacents:
             if adj not in explored:
