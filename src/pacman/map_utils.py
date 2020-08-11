@@ -78,7 +78,7 @@ class Map:
         ]
         return Map(init_map=sliced_map)
 
-    def get_adjacents(self, loc):
+    def get_adjacents(self, loc, filter_ghost=True):
         """Get adjacent nodes.\n\n
         """
 
@@ -94,8 +94,10 @@ class Map:
         if (y - 1 >= 0):     adjacents.append(((x, y-1)))
         if (y + 1 <= map_y): adjacents.append(((x, y+1)))
 
-        # Lazy check: are there walls?
+        # Filter all walls
         adjacents = [each for each in adjacents if self[each] != 1]
+        # Pacman: filter all Ghosts
+        adjacents = [each for each in adjacents if self[each] != 3]
         return adjacents
 
     def get_items(self, item):
