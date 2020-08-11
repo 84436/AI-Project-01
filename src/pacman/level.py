@@ -14,10 +14,13 @@ class Level_1:
         path = self._pacman.get_path()
         if path:
             for move in path:
-                map_utils.update_map(self._map, self._pacman.get_position(), move)
+                self._map.move_player(self._pacman.get_position(), move)
                 self._pacman.update_position(move)
-                self._pacman.update_score(-1)
-                map_utils.print_map(self._map)
-            self._pacman.update_score(20)
+                self._pacman.update_score(False)
+            self._map.remove_food(self._food)
 
-        print(self._pacman.get_score())
+        if self._pacman.get_position() == self._food:
+            self._pacman.update_score(True)
+
+class Level_2:
+    def __init__(self, the_map, pacman, ghost, food):
