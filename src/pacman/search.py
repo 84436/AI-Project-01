@@ -51,6 +51,7 @@ def a_star_search(the_map, agent_cord, goal_cord):
                 if adj not in parents or parents[adj][1] > adjacent_priority:
                     parents[adj] = [current[1][1], adjacent_priority]
 
+def depth_first_search(the_map, gen)
 
 # Unnecessary search
 def breadth_first_search(the_map, agent_cord, goal_cord):
