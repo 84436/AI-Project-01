@@ -97,7 +97,8 @@ class Map:
         # Filter all walls
         adjacents = [each for each in adjacents if self[each] != 1]
         # Pacman: filter all Ghosts
-        adjacents = [each for each in adjacents if self[each] != 3]
+        if filter_ghost:
+            adjacents = [each for each in adjacents if self[each] != 3]
         return adjacents
 
     def get_items(self, item):

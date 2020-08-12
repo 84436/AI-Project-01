@@ -12,9 +12,6 @@ the_map = map_utils.Map()
 the_map.parse_file(mapfile)
 
 # temp/test
-food = the_map.get_items(2)[0]
-pacman_init = the_map.get_items(9)
-
-pacman_1 = player.Pacman(pacman_init, 0)
-level_1 = level.Level_1(the_map, pacman_1, food)
+level_1 = level.Level_1_2(the_map)
 level_1.run()
+

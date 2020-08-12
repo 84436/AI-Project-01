@@ -18,13 +18,19 @@ class Player:
     def update_position(self, position):
         self._position = position
 
-    def search_target(self, the_map, target):  # target = (x, y): position of target
-        self._path = search.a_star_search(the_map, self._position, target)
+    def search_target(self, the_map, target, is_ghost):  # target = (x, y): position of target
+        if is_ghost:
+            self._path = search.a_star_search(the_map, self._position, target, True)
+        else:
+            self._path = search.a_star_search(the_map, self._position, target)
 
     def random_move(self, the_map):
         available_moves = the_map.get_adjacents(self._position)
         self._path = [self._position, random.choice(available_moves)]
 
+    def take_turn(self, the_map, move):
+        the_map.move_player(self.get_position(), move)
+        self.update_position(move)
 
 class Pacman(Player):
     def __init__(self, position, score):
