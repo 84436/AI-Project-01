@@ -22,33 +22,28 @@ class Level_1_2:
         # Game state: 2 = win, 1 = game over
         self._game_state = 0
 
-    def run(self):
-        self._pacman.search_target(self._map, self._food, False)
-        path = self._pacman.get_path()
-        if path:
-            for move in path:
-                self._map.move_player(self._pacman.get_position(), move)
-                self._pacman.update_position(move)
-                self._pacman.update_score(False)
-            self._map.remove_food(self._food)
+    def update_game_state(self):
+        if self._pacman.get_position() != self._food and self._pacman.get_position() != self._ghost.get_position():
+            self._pacman.update_score(False)
 
         if self._pacman.get_position() == self._food:
             self._pacman.update_score(True)
+            self._game_state = 2
 
-        while (self._game_state != 1 or self._game_state != 2) and path:
+        if self._pacman.get_position() == self._ghost.get_position():
+            self._game_state = 1
+
+    def run(self):
+        while self._game_state == 0:
             for each_player in self._turn_queue:
-                each_player.take_turn(self._map, path.pop(0))
-
-                if self._pacman.get_position() != self._food and self._pacman.get_position() != self._ghost.get_position():
-                    self._pacman.update_score(False)
-
-                if self._pacman.get_position() == self._food:
-                    self._pacman.update_score(True)
+                loc_old = each_player.get_position()
+                move = each_player.take_turn(self._map, self._food, False)
+                if not move:
                     self._game_state = 2
                     break
+                self._map.move_player(loc_old, move)
 
-                if self._pacman.get_position() == self._ghost.get_position():
-                    self._game_state = 1
+                self.update_game_state()
+
+                if self._game_state != 0:
                     break
-
-        game_state = 2

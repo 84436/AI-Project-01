@@ -28,9 +28,20 @@ class Player:
         available_moves = the_map.get_adjacents(self._position)
         self._path = [self._position, random.choice(available_moves)]
 
-    def take_turn(self, the_map, move):
-        the_map.move_player(self.get_position(), move)
-        self.update_position(move)
+    def take_turn(self, the_map, food, is_ghost):
+        if self._path:
+            move = self._path.pop(0)
+            self.update_position(move)
+            return move
+        else:
+            self.search_target(the_map, food, is_ghost)
+            if self._path:
+                self._path.pop(0)
+                move = self._path.pop(0)
+                self.update_position(move)
+                return move
+            else:
+                return None
 
 class Pacman(Player):
     def __init__(self, position, score):
