@@ -14,4 +14,3 @@ the_map.parse_file(mapfile)
 # temp/test
 level_1 = level.Level_1_2(the_map)
 level_1.run()
-

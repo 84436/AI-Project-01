@@ -13,4 +13,5 @@ class Level_3:
         self._food = food
         self._ghost = ghost
     def run(self):
+        pass
 

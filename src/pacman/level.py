@@ -35,10 +35,6 @@ class Level_1_2:
         if self._pacman.get_position() == self._food:
             self._pacman.update_score(True)
 
-# class Level_2:
-#     def __init__(self, the_map, pacman, ghost, food):
-=======
-
         while (self._game_state != 1 or self._game_state != 2) and path:
             for each_player in self._turn_queue:
                 each_player.take_turn(self._map, path.pop(0))
