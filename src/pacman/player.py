@@ -56,3 +56,7 @@ class Pacman(Player):
             self._score = self._score + 20
         else:
             self._score = self._score - 1
+
+    def check_win(self, food):
+        if len(food) == 0:
+            return True
