@@ -28,12 +28,13 @@ class Player:
         available_moves = the_map.get_adjacents(self._position)
         self._path = [self._position, random.choice(available_moves)]
 
-    def take_turn(self, the_map, food, is_ghost):
+    def take_turn(self, the_map, food_list, is_ghost):
         if self._path:
             move = self._path.pop(0)
             self.update_position(move)
             return move
         else:
+            food = food_list.pop()
             self.search_target(the_map, food, is_ghost)
             if self._path:
                 self._path.pop(0)
@@ -57,6 +58,17 @@ class Pacman(Player):
         else:
             self._score = self._score - 1
 
-    def check_win(self, food):
-        if len(food) == 0:
+    #POP FOOD TO CHECK WIN
+
+    def check_dead(self, ghost_list):
+        if self.get_position() == [ghost_list[i] for i in range(len(ghost_list))]:
             return True
+
+    def check_win(self, food_list, ghost_list):
+        if len(food_list) == 0:
+            return True
+
+    def EvaluationFun(self, food_list):
+        score = 0
+        current_state = self.get_position()
+        food_left = len(food_list)
