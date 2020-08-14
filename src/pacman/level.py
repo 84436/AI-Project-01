@@ -2,6 +2,7 @@
 # Level-specific solvers
 
 from . import player
+from . import map_pyg
 
 class Level_1_2:
     def __init__(self, the_map):
@@ -21,6 +22,8 @@ class Level_1_2:
         self._turn_queue = [self._pacman]
         # Game state: 2 = win, 1 = game over
         self._game_state = 0
+        # Create a map drawer
+        self._mapdrawer = map_pyg.MapDrawer(self._map)
 
     def update_game_state(self):
         if self._pacman.get_position() != self._food and self._pacman.get_position() != self._ghost.get_position():
@@ -33,17 +36,36 @@ class Level_1_2:
         if self._pacman.get_position() == self._ghost.get_position():
             self._game_state = 1
 
-    def run(self):
-        while self._game_state == 0:
-            for each_player in self._turn_queue:
-                loc_old = each_player.get_position()
-                move = each_player.take_turn(self._map, self._food, False)
-                if not move:
-                    self._game_state = 2
-                    break
-                self._map.move_player(loc_old, move)
+    def run(self, steps=-1):
+        self._mapdrawer.draw(self._map)
+        ### FIX ME
 
-                self.update_game_state()
-
-                if self._game_state != 0:
-                    break
+        if steps == -1:
+            while self._game_state == 0:
+                for each_player in self._turn_queue:
+                    loc_old = each_player.get_position()
+                    move = each_player.take_turn(self._map, self._food, False)
+                    if not move:
+                        self._game_state = 2
+                        break
+                    self._map.move_player(loc_old, move)
+                    self.update_game_state()
+                    # Redraw map
+                    self._mapdrawer.draw(self._map)
+                    if self._game_state != 0:
+                        break
+        else:
+            for _ in range(steps):
+                if self._game_state == 0:
+                    for each_player in self._turn_queue:
+                        loc_old = each_player.get_position()
+                        move = each_player.take_turn(self._map, self._food, False)
+                        if not move:
+                            self._game_state = 2
+                            break
+                        self._map.move_player(loc_old, move)
+                        self.update_game_state()
+                        # Redraw map
+                        self._mapdrawer.draw(self._map)
+                        if self._game_state != 0:
+                            break
