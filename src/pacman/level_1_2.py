@@ -2,7 +2,6 @@
 # Level-specific solvers
 
 from . import player
-from . import map_pyg
 
 class Level_1_2:
     def __init__(self, the_map):
@@ -22,8 +21,6 @@ class Level_1_2:
         self._turn_queue = [self._pacman]
         # Game state: 2 = win, 1 = game over
         self._game_state = 0
-        # Create a map drawer
-        self._mapdrawer = map_pyg.MapDrawer(self._map)
 
     def update_game_state(self):
         if self._pacman.get_position() != self._food and self._pacman.get_position() != self._ghost.get_position():
@@ -37,7 +34,6 @@ class Level_1_2:
             self._game_state = 1
 
     def run(self, steps=-1):
-        self._mapdrawer.draw(self._map)
         ### FIX ME
 
         if steps == -1:
@@ -50,8 +46,6 @@ class Level_1_2:
                         break
                     self._map.move_player(loc_old, move)
                     self.update_game_state()
-                    # Redraw map
-                    self._mapdrawer.draw(self._map)
                     if self._game_state != 0:
                         break
         else:
@@ -65,7 +59,5 @@ class Level_1_2:
                             break
                         self._map.move_player(loc_old, move)
                         self.update_game_state()
-                        # Redraw map
-                        self._mapdrawer.draw(self._map)
                         if self._game_state != 0:
                             break
