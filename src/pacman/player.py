@@ -34,8 +34,11 @@ class Player:
             self.update_position(move)
             return move
         else:
-            food = food_list.pop()
-            self.search_target(the_map, food, is_ghost)
+            if type(food_list) is list:
+                food = food_list.pop()
+                self.search_target(the_map, food, is_ghost)
+            else:
+                self.search_target(the_map, food_list, is_ghost)
             if self._path:
                 self._path.pop(0)
                 move = self._path.pop(0)
