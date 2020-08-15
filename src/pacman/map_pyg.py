@@ -15,10 +15,10 @@ class MapDrawer:
     def __init__(self, the_map):
         # Object init
         self.object_size = 24
-        self.object_1_wall = pygame.image.load('assets/wall.png')
-        self.object_2_food = pygame.image.load('assets/food.png')
-        self.object_3_ghost = pygame.image.load('assets/ghost_pacman.png')
-        self.object_9_pacman = pygame.image.load('assets/pacman.png')
+        self.object_1_wall = pygame.image.load('../assets/wall.png')
+        self.object_2_food = pygame.image.load('../assets/food.png')
+        self.object_3_ghost = pygame.image.load('../assets/ghost_pacman.png')
+        self.object_9_pacman = pygame.image.load('../assets/pacman.png')
         self.objects = {
             1: pygame.transform.scale(self.object_1_wall, (self.object_size, self.object_size)),
             2: pygame.transform.scale(self.object_2_food, (self.object_size, self.object_size)),
