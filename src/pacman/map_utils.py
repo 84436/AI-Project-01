@@ -136,6 +136,8 @@ class Map:
         """
         if self[loc_old] not in [3, 9]:
             pass
+        elif loc_new == loc_old:
+            pass
         else:
             self[loc_new] = self[loc_old]
             self[loc_old] = 0
