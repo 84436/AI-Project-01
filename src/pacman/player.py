@@ -48,16 +48,15 @@ class Player:
                 return None
 
     def take_turn_lv4(self, the_map, food_list, is_ghost):
-        ghost_list = the_map.get_items(2)
+        ghost_list = the_map.get_items(3)
         if self._path:
             move = self._path.pop(0)
             self.update_position(move)
             return move
         else:
-            food = food_list.pop()
-            self.MiniMax(the_map, food, ghost_list)
+            # food = food_list.pop()
+            self.MiniMax(the_map, food_list, ghost_list)
             if self._path:
-                self._path.pop(0)
                 move = self._path.pop(0)
                 self.update_position(move)
                 return move
@@ -74,7 +73,7 @@ class Player:
         if len(food_list) == 0:
             return True
 
-    def EvaluationFun(self, food_list, ghost_list, new_state):
+    def EvaluationFun(self, new_state, food_list, ghost_list):
         score = 0
         current_state = self.get_position()
         food_left = len(food_list)
@@ -86,7 +85,7 @@ class Player:
 
         ghost_distance_suc = []
         for ghost_pos in ghost_list:
-            ghost_distance.append(search.manhattan_heuristic_function(new_state,ghost_pos))
+            ghost_distance_suc.append(search.manhattan_heuristic_function(new_state,ghost_pos))
 
         food_distance = []
         for food_pos in food_list:
@@ -105,10 +104,11 @@ class Player:
 
         score += (food_left - food_left_suc)*200 - 1
         score -= 10*food_left_suc
+
         if min(ghost_distance_suc)< min(ghost_distance):
-            score -=100
+            score -=300
         else:
-            score +=200
+            score +=300
 
         return score
 
@@ -117,7 +117,7 @@ class Player:
         def MaxLevel(game_state, depth):
             cur_depth = depth + 1
             if self.check_win(food_list) or self.check_dead(ghost_list) or cur_depth == depth_limit:
-                return self.EvaluationFun(food_list,ghost_list,self.get_position())
+                return self.EvaluationFun(self.get_position(),food_list,ghost_list)
             maxvalue = -999999
             new_state_list = map.get_adjacents(game_state,filter_ghost=True)
             for new_state in new_state_list:
@@ -127,23 +127,24 @@ class Player:
         #for ghost
         def MinLevel(game_state, depth, ghost_index):
             if self.check_win(food_list) or self.check_dead(ghost_list):
-                return self.EvaluationFun(food_list,ghost_list,self.get_position())
+                return self.EvaluationFun(game_state,food_list,ghost_list)
             minvalue = 999999
-            new_state_list = map.get_adjacents(game_state, filter_ghost=False)
+            new_state_list = map.get_adjacents(self.get_position(), filter_ghost=False)
             for new_state in new_state_list:
-                if ghost_index == len(ghost_list) - 1:
+                if ghost_index == len(ghost_list) - 1 or type(self) is Pacman:
                     minvalue = min(minvalue, MaxLevel(new_state, depth))
                 else:
                     minvalue = min(minvalue,MinLevel(new_state,depth,ghost_index+1))
             return minvalue
 
         #root level
+        #pacman is max, ghost is min
         new_state_list = map.get_adjacents(self.get_position(), filter_ghost=True)
         currentScore = -999999
         for new_state in new_state_list:
             score = MinLevel(new_state,0,0)
             if score > currentScore:
-                self._path.append[new_state]
+                self._path.append(new_state)
                 currentScore = score
         return self._path
 class Pacman(Player):

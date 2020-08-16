@@ -7,12 +7,14 @@ class Level_4:
         # Get da pacman
         self._pacman = player.Pacman(the_map.get_items(9), 0)
         # Get da ghost
-        ghost_list = the_map.get_items(2)
+        ghost_list = the_map.get_items(3)
         
         self._ghost = [player.Player(ghost_list[i]) for i in range(len(ghost_list))]
         self._food_list = the_map.get_items(2)
         # Turn queue for this level, ghost is unable to move to it will not be in the queue
-        self._turn_queue = [self._pacman,[self._ghost[i] for i in range(len(ghost_list))]]
+        self._turn_queue = [self._pacman]
+        self._turn_queue += self._ghost
+
         # Game state: 2 = win, 1 = game over
         self._game_state = 0
 
@@ -41,7 +43,7 @@ class Level_4:
                     if type(each_player) is player.Pacman :
                         move = each_player.take_turn_lv4(self._map, self._food_list, False)
                     else:
-                        move = each_player.take_turn_lv4(self._map, [self._pacman.get_position()], True)
+                        move = each_player.take_turn(self._map, [self._pacman.get_position()], True)
                     if not move:
                         self._game_state = 2
                         break
@@ -56,7 +58,7 @@ class Level_4:
                     for each_player in self._turn_queue:
                         loc_old = each_player.get_position()
                         if type(each_player) is player.Pacman:
-                            move = each_player.take_turn(self._map, self._food_list, False)
+                            move = each_player.take_turn_lv4(self._map, self._food_list, False)
                         else:
                             move = each_player.take_turn(self._map, [self._pacman.get_position()], True)
                         if not move:
