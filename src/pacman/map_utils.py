@@ -17,6 +17,14 @@ class Map:
         else:
             self.__map__ = None
             self.__mapsize__ = None
+    
+    def __inmap(self, x, y):
+        """Check if a given point is within the map.
+        """
+        return (
+            x in range(0, self.__mapsize__[0]) and
+            y in range(0, self.__mapsize__[1])
+        )
 
     def __getitem__(self, loc):
         return self.__map__[loc[1]][loc[0]]
@@ -60,10 +68,7 @@ class Map:
 
         # Sanity check
         x, y = loc
-        map_x, map_y = self.__mapsize__
-        map_x -= 1
-        map_y -= 1
-        if (x < 0 or x > map_x) or (y < 0 or y > map_y): return None
+        if not self.__inmap(x, y): return None
 
         # Get the boundaries
         bxleft  = max(0,     x - foresight)
@@ -84,15 +89,14 @@ class Map:
 
         # Sanity check
         x, y = loc
-        map_x, map_y = self.__mapsize__
-        if (x < 0 or x > map_x) or (y < 0 or y > map_y): return None
+        if not self.__inmap(x, y): return None
 
         # Get four directions
         adjacents = []
-        if (x - 1 >= 0):     adjacents.append(((x-1, y)))
-        if (x + 1 <= map_x): adjacents.append(((x+1, y)))
-        if (y - 1 >= 0):     adjacents.append(((x, y-1)))
-        if (y + 1 <= map_y): adjacents.append(((x, y+1)))
+        if self.__inmap(x-1, y) : adjacents.append(((x-1, y)))
+        if self.__inmap(x+1, y) : adjacents.append(((x+1, y)))
+        if self.__inmap(x, y-1) : adjacents.append(((x, y-1)))
+        if self.__inmap(x, y+1) : adjacents.append(((x, y+1)))
 
         # Filter all walls
         adjacents = [each for each in adjacents if self[each] != 1]
