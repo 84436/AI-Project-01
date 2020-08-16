@@ -23,7 +23,7 @@ class Level_3:
         # Game state: 2 = win, 1 = game over
         self._game_state = 0
 
-        self._max_iter = 1000 # =))))))))
+        self._max_iter = 500 # =))))))))
 
     def update_game_state(self, pacman_turn):
         if pacman_turn: 

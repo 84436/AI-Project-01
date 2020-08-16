@@ -24,7 +24,7 @@ from pacman.level_4 import *
 
 # Constants
 PG_OBJECT_SIZE = 24
-STEP_DELAY = 250 # ms
+STEP_DELAY = 100 # ms
 
 # Objects
 WALL = 1
