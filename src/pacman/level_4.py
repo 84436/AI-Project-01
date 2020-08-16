@@ -17,7 +17,7 @@ class Level_4:
         self._game_state = 0
 
     def update_game_state(self):
-        if self._pacman.get_position() != [self._food_list[i] for i in range(len(self._food_list))] and self._pacman.get_position() != self._ghost.get_position():
+        if self._pacman.get_position() != [self._food_list[i] for i in range(len(self._food_list))] and self._pacman.get_position() != [self._ghost[i] for i in range(len(self._ghost))]:
             self._pacman.update_score(False)
 
         #accident meet other food than target
@@ -32,7 +32,6 @@ class Level_4:
             self._game_state = 1
 
     def run(self, steps=-1):
-        self._mapdrawer.draw(self._map)
         ### FIX ME
 
         if steps == -1:
@@ -40,16 +39,15 @@ class Level_4:
                 for each_player in self._turn_queue:
                     loc_old = each_player.get_position()
                     if type(each_player) is player.Pacman :
-                        move = each_player.take_turn(self._map, self._food_list, False)
+                        move = each_player.take_turn_lv4(self._map, self._food_list, False)
                     else:
-                        move = each_player.take_turn(self._map, [self._pacman.get_position()], True)
+                        move = each_player.take_turn_lv4(self._map, [self._pacman.get_position()], True)
                     if not move:
                         self._game_state = 2
                         break
                     self._map.move_player(loc_old, move)
                     self.update_game_state()
                     # Redraw map
-                    self._mapdrawer.draw(self._map)
                     if self._game_state != 0:
                         break
         else:
@@ -66,8 +64,6 @@ class Level_4:
                             break
                         self._map.move_player(loc_old, move)
                         self.update_game_state()
-                        # Redraw map
-                        self._mapdrawer.draw(self._map)
                         if self._game_state != 0:
                             break
 

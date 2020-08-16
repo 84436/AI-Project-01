@@ -29,7 +29,6 @@ class Player:
         self._path = [self._position, random.choice(available_moves)]
 
     def take_turn(self, the_map, food_list, is_ghost):
-        ghost_list = the_map.get_items(2)
         if self._path:
             move = self._path.pop(0)
             self.update_position(move)
@@ -37,9 +36,9 @@ class Player:
         else:
             if type(food_list) is list:
                 food = food_list.pop()
-                self.MiniMax(the_map, food, ghost_list= ghost_list)
+                self.search_target(the_map, food, is_ghost = False)
             else:
-                self.MiniMax(the_map, food_list, ghost_list= ghost_list)
+                self.search_target(the_map, food_list, is_ghost = False)
             if self._path:
                 self._path.pop(0)
                 move = self._path.pop(0)
@@ -47,6 +46,24 @@ class Player:
                 return move
             else:
                 return None
+
+    def take_turn_lv4(self, the_map, food_list, is_ghost):
+        ghost_list = the_map.get_items(2)
+        if self._path:
+            move = self._path.pop(0)
+            self.update_position(move)
+            return move
+        else:
+            food = food_list.pop()
+            self.MiniMax(the_map, food, ghost_list)
+            if self._path:
+                self._path.pop(0)
+                move = self._path.pop(0)
+                self.update_position(move)
+                return move
+            else:
+                return None
+
 
     # CHECK STATE
     def check_dead(self, ghost_list):

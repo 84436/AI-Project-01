@@ -38,8 +38,8 @@ ASSETS_DIR = BASE_DIR + '/assets'
 MAPS_DIR   = BASE_DIR + '/maps'
 
 # Set maps and levels (from default or from arguments)
-MAP = '01_19-21_macpan'
-LEVEL = 1
+MAP = '00_21-06_noghost'
+LEVEL = 4
 try:
     if len(sys.argv) == 1:
         pass
