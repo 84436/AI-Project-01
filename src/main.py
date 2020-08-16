@@ -38,7 +38,7 @@ ASSETS_DIR = BASE_DIR + '/assets'
 MAPS_DIR   = BASE_DIR + '/maps'
 
 # Set maps and levels (from default or from arguments)
-MAP = '01_19-21_macpan'
+MAP = 'macpan'
 LEVEL = 4
 try:
     if len(sys.argv) == 1:
@@ -78,7 +78,8 @@ objects = {
     PACMAN: pgscale(pgload(ASSETS_DIR + '/' + 'pacman.png'),       (PG_OBJECT_SIZE, PG_OBJECT_SIZE)),
 }
 map_width, map_height = the_map.__mapsize__
-window_size = [map_width * PG_OBJECT_SIZE, map_height * PG_OBJECT_SIZE]
+control_bar_height = 48 + 2*8
+window_size = [map_width * PG_OBJECT_SIZE, map_height * PG_OBJECT_SIZE + control_bar_height]
 
 # PyGame: init main and subsurfaces
 pygame.init()
@@ -98,78 +99,126 @@ def pg_draw_all_blind():
             if (each_o != 0):
                 screen.blit(objects[each_o], (x*PG_OBJECT_SIZE, y*PG_OBJECT_SIZE))
 
-# Surface/Walls: draw
-def pg_draw_walls():
-    global the_map, surface_walls
-    for y, each_row in enumerate(the_map.__map__):
-        for x, each_o in enumerate(each_row):
-            if (each_o == WALL):
-                surface_walls.blit(objects[each_o], (x*PG_OBJECT_SIZE, y*PG_OBJECT_SIZE))
+################################################################################
+# CONTROL BUTTONS FOR MAIN LOOP
+# https://pythonprogramming.net/pygame-button-function-events
+# https://stackoverflow.com/questions/47639826/pygame-button-single-click
 
-# Surface/Food: draw
-def pg_draw_food():
-    global the_map, surface_food
-    for y, each_row in enumerate(the_map.__map__):
-        for x, each_o in enumerate(each_row):
-            if (each_o == FOOD):
-                surface_food.blit(objects[each_o], (x*PG_OBJECT_SIZE, y*PG_OBJECT_SIZE))
+# Buttons
+BUTTON_WIDTH = 120
+BUTTON_HEIGHT = 48
+button_score = {
+    'rect': (0*BUTTON_WIDTH + (0+1)*8, (map_height * PG_OBJECT_SIZE) + 8, BUTTON_WIDTH, BUTTON_HEIGHT),
+    'color_active': (0, 255, 255),
+    'color_inactive': (0, 255, 255),
+    'text': '',
+    'action': None
+}
+button_step_once = {
+    'rect': (1*BUTTON_WIDTH + (1+1)*8, (map_height * PG_OBJECT_SIZE) + 8, BUTTON_WIDTH, BUTTON_HEIGHT),
+    'color_active': (0, 255, 0),
+    'color_inactive': (0, 127, 0),
+    'text': '> Step 1',
+    'action': 'step_once'
+}
+button_step_all = {
+    'rect': (2*BUTTON_WIDTH + (2+1)*8, (map_height * PG_OBJECT_SIZE) + 8, BUTTON_WIDTH, BUTTON_HEIGHT),
+    'color_active': (0, 255, 0),
+    'color_inactive': (0, 127, 0),
+    'text': '>>> Step all',
+    'action': 'step_all'
+}
+buttons = [button_step_once, button_step_all]
 
-# Screen: draw all
-def pg_draw_base(draw_mode=1):
-    """Request PyGame to redraw screen\n
-    `draw_mode` can be set to `0` (redraw everything) or `1` (or any other values: don't redraw walls)
-    """
+# Font for button
+FONT_FILE = ASSETS_DIR + '/Inconsolata-Regular.ttf'
+font = pygame.font.Font(FONT_FILE, 16)
+
+# Button drawer
+def draw_button(rect, color, text):
     global screen
-    global surface_food, pg_draw_food
-    if draw_mode == 0:
-        global surface_walls, pg_draw_walls
-        pg_draw_walls()
-        screen.blit(surface_walls, (0, 0))
-    pg_draw_food()
-    screen.blit(surface_food, (0, 0))
+    bx, by, bw, bh = rect
+    pygame.draw.rect(screen, color, rect)
+    text_surface = font.render(text, True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=(int(bx+(bw/2)), int(by+(bh/2))))
+    screen.blit(text_surface, text_rect)
 
 ################################################################################
 # MAIN LOOP
 
 # Print basic info
-print('Level = {l}\nMap   = {m}\nCtrl-C here to stop.'.format(
+print('Level = {l}\nMap   = {m} ({mx} * {my} tiles)\nCtrl-C here to stop.'.format(
     l = LEVEL,
-    m = MAP
+    m = MAP,
+    mx = the_map.__mapsize__[1],
+    my = the_map.__mapsize__[0]
 ))
 
-STEP_ALL = True
+STEP_ALL = False
 GAME_OVER_PRINT_MSG = False
 
-pg_draw_all_blind()
 while w_loop:
-    # Event queue: game not over, step once
-    # while level._game_state == 0 and STEP_ALL == False:
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             w_loop = False
-    #             break
-    #     level.run()
-    #     pygame.display.flip()
-    
-    # Event queue: game not over, step all
-    while level._game_state == 0:
+    # Mode: step once
+    while level._game_state == 0 and STEP_ALL == False:
+        # Draw map
+        pg_draw_all_blind()
+        # Draw score
+        draw_button(button_score['rect'], button_score['color_active'], str(level._pacman._score))
+        # Draw button (with mouseover detection)
+        for each_button in buttons:
+            if pygame.Rect(each_button['rect']).collidepoint(pygame.mouse.get_pos()):
+                draw_button(each_button['rect'], each_button['color_active'], each_button['text'])
+            else:
+                draw_button(each_button['rect'], each_button['color_inactive'], each_button['text'])
+        # Handle event queue
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                w_loop = False
-                break
-        level.run(steps=1)
+                pygame.quit()
+                exit(0)
+            # One of the buttons is clicked
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                for each_button in buttons:
+                    if pygame.Rect(each_button['rect']).collidepoint(pygame.mouse.get_pos()):
+                        if each_button['action'] == 'step_once':
+                            level.run(steps=1)
+                        elif each_button['action'] == 'step_all':
+                            print('Step all mode activated.')
+                            STEP_ALL = True
+        w.update()
+    
+    # Mode: step all
+    while level._game_state == 0:
+        # Draw map
         pg_draw_all_blind()
-        pygame.display.flip()
+        # Draw score
+        draw_button(button_score['rect'], button_score['color_active'], str(level._pacman._score))
+        # Run
+        level.run(steps=1)
+        # Handle event queue
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit(0)
+        w.update()
         pygame.time.delay(STEP_DELAY)
 
-    # Event queue: game over
+    # Mode: game over
+    # Print game over message (once)
     if not GAME_OVER_PRINT_MSG:
-        print('Game over.')
+        if level._game_state == 1:
+            print('Game over: Pacman lost.')
+        else: # level._game_state == 2:
+            print('Game over: Pacman won.')
         GAME_OVER_PRINT_MSG = True
+    # Draw map
+    pg_draw_all_blind()
+    # Draw score
+    draw_button(button_score['rect'], button_score['color_active'], str(level._pacman._score))
+    # Handle event queue
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            w_loop = False
-            break
-    pygame.display.flip()
+            pygame.quit()
+            exit(0)
+    w.update()
 
 pygame.quit()

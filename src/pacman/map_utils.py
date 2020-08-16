@@ -45,6 +45,7 @@ class Map:
         # Read and split
         m = mapfile.read().splitlines()
         self.__mapsize__, map_lines, pacman_init = self.__tuplify__(m[0]), m[1:-1], self.__tuplify__(m[-1])
+        self.__mapsize__ = (self.__mapsize__[1], self.__mapsize__[0])
         self.__map__ = [
             [int(point) for point in row]
             for row in map_lines
