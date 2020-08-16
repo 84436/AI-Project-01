@@ -10,27 +10,28 @@ class Level_1_2:
         # Get da pacman
         self._pacman = player.Pacman(the_map.get_items(9), 0)
         # Get da ghost
-        ghost_list = the_map.get_items(2)[0]
+        ghost_list = the_map.get_items(2)
         if ghost_list:
-            self._ghost = player.Player(ghost_list[0])
+            self._ghost = [player.Player(ghost_list[i]) for i in range(len(ghost_list))]
         else:
-            self._ghost = player.Player((-1, -1))
+            self._ghost = [player.Player((-1, -1))]        
         # Get da food
         self._food = the_map.get_items(2)[0]
         # Turn queue for this level, ghost is unable to move to it will not be in the queue
         self._turn_queue = [self._pacman]
         # Game state: 2 = win, 1 = game over
         self._game_state = 0
+        
 
     def update_game_state(self):
-        if self._pacman.get_position() != self._food and self._pacman.get_position() != self._ghost.get_position():
+        if self._pacman.get_position() != self._food and self._pacman.get_position() not in self._map.get_items(2):
             self._pacman.update_score(False)
 
         if self._pacman.get_position() == self._food:
             self._pacman.update_score(True)
             self._game_state = 2
 
-        if self._pacman.get_position() == self._ghost.get_position():
+        if self._pacman.get_position() in self._map.get_items(3):
             self._game_state = 1
 
     def run(self, steps=-1):
