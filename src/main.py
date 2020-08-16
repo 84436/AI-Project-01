@@ -38,7 +38,7 @@ ASSETS_DIR = BASE_DIR + '/assets'
 MAPS_DIR   = BASE_DIR + '/maps'
 
 # Set maps and levels (from default or from arguments)
-MAP = '00_21-06_noghost'
+MAP = '01_19-21_macpan'
 LEVEL = 4
 try:
     if len(sys.argv) == 1:
@@ -46,11 +46,11 @@ try:
     elif len(sys.argv) == 2:
         # Is level number valid?
         LEVEL = int(sys.argv[1])
-        if LEVEL not in range(1, 2+1): raise
+        if LEVEL not in range(1, 4+1): raise
     elif len(sys.argv) == 3:
         # Is level number valid?
         LEVEL = int(sys.argv[1])
-        if LEVEL not in range(1, 2+1): raise
+        if LEVEL not in range(1, 4+1): raise
         # Does this map exists?
         MAP = sys.argv[2]
         if not os.path.exists(MAPS_DIR + '/' + MAP + '.txt'): raise
