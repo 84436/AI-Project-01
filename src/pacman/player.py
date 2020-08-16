@@ -51,7 +51,6 @@ class Player:
             else:
                 self.search_target(the_map, food_list, is_ghost = False)
             if self._path:
-                self._path.pop(0)
                 move = self._path.pop(0)
                 self.update_position(move)
                 return move
@@ -257,16 +256,3 @@ class Pacman(Player):
             self._score = self._score - 1
 
     #POP FOOD TO CHECK WIN
-
-    def check_dead(self, ghost_list):
-        if self.get_position() == [ghost_list[i] for i in range(len(ghost_list))]:
-            return True
-
-    def check_win(self, food_list, ghost_list):
-        if len(food_list) == 0:
-            return True
-
-    def EvaluationFun(self, food_list):
-        score = 0
-        current_state = self.get_position()
-        food_left = len(food_list)
