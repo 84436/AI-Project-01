@@ -68,6 +68,7 @@ class Map:
 
         # Sanity check
         x, y = loc
+        map_x, map_y = self.__mapsize__
         if not self.__inmap(x, y): return None
 
         # Get the boundaries
